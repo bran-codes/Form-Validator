@@ -4,7 +4,8 @@ const email = document.getElementById("email");
 const password = document.getElementById("password");
 const password2 = document.getElementById("password2");
 
-//Show input error message if entry parameters are incorrect or non-existent
+//**FUNCTIONS**
+//Show input error message if entries are incorrect or non-existent
 function showError(input, message) {
   const formControl = input.parentElement;
   formControl.className = "form-control error";
@@ -12,45 +13,37 @@ function showError(input, message) {
   small.innerText = message;
 }
 
-//Changes input boxes to green outline if entry parameters are correct
+//Changes input box borders to green if entry parameters are correct
 function showSuccess(input) {
   const formControl = input.parentElement;
   formControl.className = "form-control success";
 }
 
-//Check if email is valid
+//Check if entered email address is valid
 function isValidEmail(email) {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 }
 
-//Event listeners
+//Check required fields
+function checkRequired(inputArr) {
+  inputArr.forEach(function (input) {
+    if (input.value.trim() === "") {
+      showError(input, `${capitalizeFieldNameFirstLetter(input)} is required`);
+    } else {
+      showSuccess(input);
+    }
+  });
+}
+
+//Get fieldname, capitalize the first letter and send it back to checkRequired() function
+function capitalizeFieldNameFirstLetter(input) {
+  return input.id.charAt(0).toUpperCase() + input.id.slice(1);
+}
+
+//**EVENT LISTENERS**
 form.addEventListener("submit", function (e) {
   e.preventDefault();
 
-  if (username.value === "") {
-    showError(username, "Username is required");
-  } else {
-    showSuccess(username);
-  }
-
-  if (email.value === "") {
-    showError(email, "Email is required");
-  } else if (!isValidEmail(email.value)) {
-    showError(email, "Email is not valid");
-  } else {
-    showSuccess(email);
-  }
-
-  if (password.value === "") {
-    showError(password, "Password is required");
-  } else {
-    showSuccess(password);
-  }
-
-  if (password2.value === "") {
-    showError(password2, "Password2 is required");
-  } else {
-    showSuccess(password2);
-  }
+  checkRequired([username, email, password, password2]);
 });
